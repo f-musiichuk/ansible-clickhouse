@@ -1,0 +1,8 @@
+---
+- name: "Set clickhouse_service_enable"
+  set_fact:
+    clickhouse_service_enable: true
+
+- name: "Set clickhouse_service_ensure"
+  set_fact:
+    clickhouse_service_ensure: "started"

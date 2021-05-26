@@ -1,0 +1,4 @@
+---
+- hosts: clickhouse-aws
+  roles:
+    - clickhouse-server
