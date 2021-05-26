@@ -1,47 +1,19 @@
 ---
 # tasks file for clickhouse
 - include_tasks: precheck.yml
-  tags: [always]
 
 - include_tasks: params.yml
-  tags: [always]
 
-- include_tasks:
-    file: "{{ lookup('first_found', params) }}"
-    apply:
-      tags: [install]
-  vars:
-    params:
-      files:
-        - "install/{{ ansible_pkg_mgr }}.yml"
-        - "empty.yml"
-  tags: [install]
+- include_tasks: install/apt.yml
 
-- include_tasks:
-    file: configure/sys.yml
-    apply:
-      tags: [config, config_sys]
-  tags: [config, config_sys]
+- include_tasks: configure/sys.yml
 
 - name: "Notify Handlers Now"
   meta: flush_handlers
 
 - include_tasks: service.yml
-  tags: [always]
 
 - name: "Wait for Clickhouse Server to Become Ready"
   wait_for:
     port: "{{ clickhouse_tcp_port }}"
     delay: "{{ clickhouse_ready_delay }}"
-
-- include_tasks:
-    file: configure/db.yml
-    apply:
-      tags: [config, config_db]
-  tags: [config, config_db]
-
-- include_tasks:
-    file: configure/dict.yml
-    apply:
-      tags: [config, config_dict]
-  tags: [config, config_dict]

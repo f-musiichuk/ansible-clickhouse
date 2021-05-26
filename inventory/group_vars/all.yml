@@ -3,53 +3,26 @@ ansible_user: ansible
 clickhouse_supported: true
 
 clickhouse_repo: "deb https://repo.clickhouse.tech/deb/stable/ main/"
-clickhouse_repo_old: >-
-  deb
-  http://repo.yandex.ru/clickhouse/{{ansible_distribution_release}}
-  stable main
 clickhouse_repo_keyserver: keyserver.ubuntu.com
 clickhouse_repo_key: E0C56BD4
 
 clickhouse_version: "20.12.5.14"
 
-clickhouse_package:
-  - clickhouse-client
-  - clickhouse-server
-  - clickhouse-common-static
-
 clickhouse_path_configdir: "/etc/clickhouse-server"
 clickhouse_path_logdir: "/var/log/clickhouse-server"
-clickhouse_path_data: "{{ clickhouse_path_base }}/clickhouse/"
-clickhouse_path_tmp: "{{ clickhouse_path_base }}/clickhouse/tmp/"
 clickhouse_service: "clickhouse-server.service"
 
-clickhouse_listen_host_default:
-  - "127.0.0.1"
-clickhouse_users_custom:
-  - {
-      name: "testuser",
-      password_sha256_hex: "ae5deb822e0d71992900471a7199d0d95b8e7c9d05c40a8245a281fd2c1d6684",
-      networks: "{{ clickhouse_networks_default }}",
-      profile: "default",
-      quota: "default",
-      dbs: { testu1 },
-      comment: "classic user with plain password",
-    }
+max_memory_usage: 10000000000
+max_memory_usage_for_user: 10000000000
 
-clickhouse_dbs_custom:
-  - { name: testu1 }
+clickhouse_tcp_port: 9000
+clickhouse_ready_delay: 5
 
-clickhouse_dicts:
-  test1:
-    name: test_dict
-    odbc_source:
-      connection_string: "DSN=testdb"
-      source_table: "dict_source"
-    lifetime:
-      min: 300
-      max: 360
-    layout: hashed
-    structure:
-      key: "testIntKey"
-      attributes:
-        - { name: testAttrName, type: UInt32, null_value: 0 }
+clickhouse_logger:
+  level: trace
+  log: "{{ clickhouse_path_logdir }}/clickhouse-server.log"
+  errorlog: "{{ clickhouse_path_logdir }}/clickhouse-server.err.log"
+  size: 1000M
+  count: 10
+
+clickhouse_defuser_password_sha256_hex: "ae5deb822e0d71992900471a7199d0d95b8e7c9d05c40a8245a281fd2c1d6684"
